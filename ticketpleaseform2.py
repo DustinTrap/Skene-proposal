@@ -4,7 +4,7 @@ import sqlite3
 root=Tk() 
 #don't forget to loop the file with Tkinter
 root.title("Ticket Please")
-root.geometry("500x500")
+root.geometry("600x700")
 
 #	LEGEND
 #cc= Calling Company
@@ -70,9 +70,51 @@ def submit():
 	msn.delete(0,END)
 	notes.delete(1.0,END)	 
 
-#create Query function
 def query():
-	return
+	con=sqlite3.connect('ticketplease.db')
+	cur=con.cursor()
+	cur.execute("SELECT *, oid FROM ticketplease")
+	records = cur.fetchall()
+	print_records = '' #set variable equal to nothing. 
+	for record in records:
+		print_records += (str(record[0]) + ", " + str(record[1]) + ", " + " \t" + str(record[9]) + "\n")
+
+	query_label = Label(root, text = print_records)
+	query_label.grid(row=10, ipadx=1, column=1, columnspan=3, sticky=NE)
+
+	con.commit()
+	con.close()
+
+#def delete():
+#	con=sqlite3.connect('ticketplease.db')
+#	cur=con.cursor()
+#	#delete_record_number=delete_box.get()
+#	cur.execute("DELETE from ticketplease WHERE oid="+ delete_box.get())
+#execute the query code agian.
+#	cur.execute("SELECT *, oid FROM ticketplease")
+#	records = cur.fetchall()
+#	print_records = '' #set variable equal to nothing. 
+#	for record in records:
+#		print_records += (str(record[0]) + ", " + str(record[1]) + ", " + " \t" + str(record[9]) + "\n")
+
+#	query_label = Label(root, text = print_records)
+#	query_label.grid(row=10, ipadx=1, column=1, columnspan=3, sticky=NE)
+
+#	con.commit()
+#	con.close()
+
+def pull():
+	pull=Tk() 
+	pull.title("Pull Record")
+	pull.geometry("600x700")
+	con=sqlite3.connect('ticketplease.db')
+	cur=con.cursor()
+
+	con.commit()
+	con.close()
+
+delete_box = Entry(root, width=20, bg="white", borderwidth=1)
+delete_box.grid(row=9, column=1, padx=10, pady=0)
 
 ticket=LabelFrame(root, text="Ticket #")
 ticket.grid(row=0, column=1, columnspan=2, padx=10, pady=10)
@@ -118,13 +160,18 @@ msnlabel.grid(row=7, column=0, padx=10, pady=10)
 noteslabel=Label(root, text="Case Discription")
 noteslabel.grid(row=8, column=0, padx=10, pady=10)
 
-
+#Buttons
 submit_btn=Button(root, text="Save Ticket", bg="lightgreen", command=submit)
-submit_btn.grid(row=0, column=3)
+submit_btn.grid(row=0, column=3, pady=(0,15))
 
-#create a Query Button
 query_btn = Button(root, text="Show Records", command=query)
-query_btn.grid()
+query_btn.grid(row=0, column=3, pady=(40,0))
+
+#delete_btn = Button(root, text="Delete Record", command=delete)
+#delete_btn.grid(row=9, column=4, sticky=N)
+
+pull_btn = Button(root, text="Pull Ticket", command=pull)
+pull_btn.grid(row=9, column=0, sticky=N)
 
 con.commit()
 con.close()
